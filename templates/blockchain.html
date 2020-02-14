@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+		<script src="{{ url_for('static',filename='js/jquery.min.js') }}"></script>
+		<script src="{{ url_for('static',filename='js/bootstrap.min.js') }}"></script>
+		
+		<link rel="stylesheet" href="{{ url_for('static',filename='css/bootstrap.min.css') }}">
+		<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+		<link rel="stylesheet" href="{{ url_for('static',filename='css/style.css') }}">	
+	</head>
+
+<body>
+	
+	<div class="background">
+		<img class="" src="{{ url_for('static',filename='img/background_home.svg') }}" alt="">
+	</div>
+	<div class="wrapper">
+		<div id="rowBanner">
+			<div class="banner d-flex justify-content-between">
+				<img class="logo" src="{{ url_for('static',filename='img/logo.svg') }}" alt="">
+				<h1 class="display-3 text-white">CONSORTIUM BLOCKCHAIN</h1>
+			</div>
+		</div>
+		<div id="rowVideo">    
+	
+			<div class="container-fluid"> 
+				
+				<div class="row">
+					<div class="col-12 text-center" id="left">
+						<video controls loop autoplay >
+							<source src="{{ url_for('static',filename='img/video.mp4') }}" type="video/mp4">
+						</video>
+					</div>						
+				</div> 
+			</div> 
+		</div>
+	</div>
+</body>
+</html>

@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+		<script src="{{ url_for('static',filename='js/jquery.min.js') }}"></script>
+		<script src="{{ url_for('static',filename='js/bootstrap.min.js') }}"></script>
+		
+		<link rel="stylesheet" href="{{ url_for('static',filename='css/bootstrap.min.css') }}">
+		<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+		<link rel="stylesheet" href="{{ url_for('static',filename='css/style.css') }}">	
+	</head>
+
+<body>
+	
+	<div class="background">
+		<img class="" src="{{ url_for('static',filename='img/background_home.svg') }}" alt="">
+	</div>
+	<div class="wrapper">
+		<div id="rowBanner">
+			<div class="banner d-flex justify-content-between">
+				<img class="logo" src="{{ url_for('static',filename='img/logo.svg') }}" alt="">
+				<h1 class="display-3 text-white">WHO ARE YOU ?</h1>
+			</div>
+		</div>
+		<div id="rowVideo">    
+	
+			<div class="container-fluid"> 
+				
+				<div class="row">
+					<div class="col-9 text-center" id="left">
+						<img class="video" src="/video_feed_start" id='camera'> <!--height="470" width="670"-->
+					</div>						
+						
+					<div class="col-3 text-center buttons" id="right">
+						 <!--onclick='document.location.reload(false)'-->	
+							<button id='btnRefresh' class='btn btn-info btn-lg ' 		 		onclick='refresh();'><i class='material-icons'>refresh</i>TRAIN MODEL</button>
+							<button id='btnSelect' 	class='btn btn-secondary btn-lg ' disabled		onclick='startSelect();'  					><i class='material-icons'>center_focus_strong</i>FACE SELECT</button>
+							<button id='btnTrack' 	class='btn btn-secondary btn-lg ' disabled 		onclick='startTrack();' 					><i class='material-icons'>videocam</i>START TRACKING</button>			
+							<button id='btnStop' 	class='btn btn-secondary btn-lg ' disabled		onclick='stopTrack();'						><i class='material-icons'>videocam_off</i>STOP TRACKING</button>
+
+							<div class="input-group mb-3">
+								<div class="input-group-prepend">
+								<span class="input-group-text" id="basic-addon1"><i class='material-icons'>account_circle</i></span>
+								</div>
+								<input type="text" class="form-control" placeholder="Username" name="name" id="name" disabled>
+							</div>					
+						
+							<button id='btnRename' 	class='btn btn-secondary btn-lg ' disabled		onclick='renameFolder();'					><i class='material-icons'>save_alt</i>RECORD USER</button>			
+							<button id='btnClear' 	class='btn btn-dark btn-lg ' 					onclick='clearDatabase();' 				><i class='material-icons'>delete_forever</i>CLEAR</button>						
+					</div>
+				</div> 
+			</div> 
+		</div>
+	</div>
+
+	<script >
+		function init(){
+			$('#btnSelect').addClass('btn-warning');
+			$('#btnSelect').prop('disabled', false)
+			
+			let camHeight = $('#rowVideo').height() - 100;
+			$('#camera').height(camHeight);
+		}
+		
+		init();
+		
+		function refresh(){
+			camera.src ='/video_feed_restart';
+
+			$('#btnRefresh').removeClass('blink_me');
+			
+			$('#btnSelect').addClass('btn-warning');
+			$('#btnSelect').prop('disabled', false);
+
+			$('#btnTrack').removeClass('btn-success');
+			$('#btnTrack').prop('disabled', true);
+
+			$('#btnStop').removeClass('btn-danger');
+			$('#btnStop').prop('disabled', true);
+
+			$('#btnRename').removeClass('btn-success');
+			$('#btnRename').prop('disabled', true);
+		}
+
+
+		function startSelect(){
+			camera.src ='/video_feed_select';
+			
+			$('#btnSelect').removeClass('btn-warning');
+			$('#btnSelect').prop('disabled', true);
+			
+			$('#btnTrack').addClass('btn-success');
+			$('#btnTrack').prop('disabled', false);							
+		}
+
+		function startTrack(){
+			camera.src ='/video_feed_track';
+			
+			$('#btnTrack').removeClass('btn-success');
+			$('#btnTrack').prop('disabled', true);
+			
+			$('#btnStop').addClass('btn-danger');
+			$('#btnStop').prop('disabled', false);	
+			
+			setTimeout (function (){stopTrack();}, 30000);
+		}
+		
+		function stopTrack(){
+			camera.src ='/video_feed_stop';
+			
+			$('#btnSelect').addClass('btn-warning');
+			$('#btnSelect').prop('disabled', false);
+			
+			$('#btnStop').removeClass('btn-danger');
+			$('#btnStop').prop('disabled', true);
+			
+			$('#btnRename').addClass('btn-success');
+			$('#btnRename').prop('disabled', false);
+			
+			$('#name').prop('disabled', false);
+			$('#name').focus();
+			
+		}
+		
+		function clearDatabase(){
+			alert('Database cleared successfuly');
+
+			$('#btnSelect').addClass('btn-warning');
+			$('#btnSelect').prop('disabled', false);
+
+			$('#btnRename').removeClass('btn-success');
+			$('#btnRename').prop('disabled', true);
+
+			$.ajax({
+				"url": "{{url_for('clean_database')}}",
+				"method": "POST",
+			})
+
+			camera.src ='/video_feed_start';
+			
+		}
+
+		
+		function renameFolder(){
+			///////////////////////////////////////////
+			//CHARGEMENT DE LA LISTE DES UOS ET GROUPES
+			///////////////////////////////////////////	
+		
+			//camera.src ='/video_feed_restart';
+		
+
+
+			if($('#name').val()){
+				$('#btnRename').removeClass('btn-success');
+				$('#btnRename').prop('disabled', true);
+				
+				
+				
+				$.ajax({
+					"url": "{{url_for('rename_folder')}}",
+					"method": "POST",
+					"data":'name=' + $("#name").val()
+				}).done(function (response) {
+					//camera.src ='/video_feed_restart';
+				});
+				
+				$('#name').prop('disabled', true);
+				$('#name').val('');
+				$('#btnRefresh').removeClass('blink_me');
+				$('#btnRefresh').addClass('blink_me');
+			}
+			else{
+				alert('Give the machine a name');
+			}
+		}
+
+	</script>
+
+</body>
+</html>
